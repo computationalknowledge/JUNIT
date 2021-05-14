@@ -1,0 +1,135 @@
+package com.healthycoderapp;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
+import java.util.*;
+
+class BMICalculatorTest {
+
+	@Test
+	
+	void should_ReturnTrue_When_DietRecommended() {
+		
+	// given
+	double weight = 89.0;
+	double height = 1.72;
+	// when
+	boolean recommended = BMICalculator.isDietRecommended(weight, height);
+	
+	// then
+	// assertTrue(1==0);
+	assertTrue(recommended);	
+	}
+	
+	@Test
+	
+	void should_ReturnFalse_When_DietNotRecommended() {
+		
+	// given
+	double weight = 49.0;
+	double height = 2.72;
+	// when
+	boolean recommended = BMICalculator.isDietRecommended(weight, height);
+	
+	// then
+	assertFalse(recommended);	
+	}
+	
+	@Test
+	
+	void should_ThrowArithmeticException_When_HeightZero() {
+		
+	// given
+	double weight = 49.0;
+	double height = 0.0;
+	// when
+	/* now we use a lambda expression
+	Java Lambda Expressions   https://www.w3schools.com/java/java_lambda.asp
+
+	A lambda expression is a short block of code which takes in parameters and returns a value. 
+	Lambda expressions are similar to methods, but they do not need a name and they can be implemented right in the body of a method.
+	*/
+	
+	Executable executable = () -> BMICalculator.isDietRecommended(weight, height);
+	
+	// then
+	assertThrows(ArithmeticException.class, executable);	
+	}
+	
+	@Test
+	
+	void should_returnCoderWithWorstBMI_When_CoderListNotEmpty() {
+		
+	// given
+		List<Coder> coders = new ArrayList<>();
+		coders.add(new Coder(1.80, 60.0));
+		coders.add(new Coder(1.82, 98.0));
+		coders.add(new Coder(1.82, 64.7));
+		
+	// when 
+		Coder coderWorstBMI = BMICalculator.findCoderWithWorstBMI(coders);
+		
+	// then
+	/*	assertEquals(1.82, coderWorstBMI.getHeight());
+		assertEquals(98.0, coderWorstBMI.getWeight());
+		
+		// problem with the above: if the first assertion fails, the second one will never be executed
+		// this is an example of the OCCLUSION EFFECT
+		// now observe in the Failure Trace that both tests fail
+		assertAll(
+				() -> assertEquals(1.85, coderWorstBMI.getHeight()),
+				() -> assertEquals(98.5, coderWorstBMI.getWeight())
+			);
+	*/	
+		
+		// now let's make the test pass again:
+		assertAll(
+				() -> assertEquals(1.82, coderWorstBMI.getHeight()),
+				() -> assertEquals(98.0, coderWorstBMI.getWeight())
+			);
+	}
+	
+	
+	@Test
+	
+	void should_returnNullWorstBMICoder_When_CoderListEmpty() {
+		
+	// given
+		List<Coder> coders = new ArrayList<>();
+		// here we are providing an empty coder list
+		
+	// when 
+		Coder coderWorstBMI = BMICalculator.findCoderWithWorstBMI(coders);
+		
+	// then
+	assertNull(coderWorstBMI);
+	}
+	
+	@Test
+	
+	void should_ReturnCorrectBMIScoreArray_When_CoderListNotEmpty() {
+		
+		// given
+		List<Coder> coders = new ArrayList<>();
+		coders.add(new Coder(1.80, 60.0));
+		coders.add(new Coder(1.82, 98.0));
+		coders.add(new Coder(1.82, 64.7));
+		double [] expected = {18.52, 29.59, 19.53};
+
+		// when
+		double[] bmiScores = BMICalculator.getBMIScores(coders);
+	
+		// then
+		// note that this will FAIL because assertEquals checks that the input params
+		// are THE VERY SAME OBJECTS IN MEMORY
+		
+		// assertEquals(expected, bmiScores);	
+		
+		// To test array equality, we need to compare EACH PAIR OF ELEMENTS SEPARATELY
+		
+		assertArrayEquals(expected, bmiScores);
+	}
+	
+}
